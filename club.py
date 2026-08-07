@@ -21,9 +21,9 @@ class Club:
         # fecha_fundacion debe ser un objeto de tipo datetime 
         self.__fecha_fundacion = fecha_fundacion
 
-  # Método 1: Calcular Antigüedad
+  # Metodo 1: Calcular Antigüedad
     def calcular_antiguedad(self):
-        #8 estoy guardando en una variable la fecha actual
+        # estoy guardando en una variable la fecha actual
         fecha_actual = datetime.now() 
         
         # se hace el calculo para ver cuantos años tiene de antiguedad
