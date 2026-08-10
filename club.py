@@ -18,7 +18,7 @@ class Club:
         self.descripcion = descripcion
         self.ubicacion = ubicacion
         self.__presidente = presidente
-        # fecha_fundacion debe ser un objeto de tipo datetime 
+        # fecha_fundacion debe ser un objeto de tipo datetime
         self.__fecha_fundacion = fecha_fundacion
 
   # Metodo 1: Calcular Antigüedad
@@ -42,6 +42,6 @@ class Club:
     def es_institucion_historica(self):
         return self.calcular_antiguedad() > 50
 
-club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes de gran altura", "Parque de los Patricios", "Talislao Zen", datetime(2000,8,3))
-print("Antigüedad del club:", club.calcular_antiguedad())
+club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes de gran altura", "Parque de los Patricios", "Talislao Zen", datetime(1876,8,3))
+print("Antiguedad del club:", club.calcular_antiguedad())
 print("Es institución histórica:", club.es_institucion_historica())

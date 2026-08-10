@@ -9,6 +9,7 @@ class ClubCategoria(Club):
     def socios (self):
         return self.__socios
 
+
     def set_socios (self, socios):
         self.__socios = socios
 

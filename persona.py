@@ -9,21 +9,22 @@
 #● mostrar_datos()
 #● getters y setters
 
+from datetime import datetime
 
 class Persona:
-    def __init__(self, nombre_completo, edad, tipo_identificacion, identificacion, nacionalidad):
+    def __init__(self, nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad):
         self.nombre_completo = nombre_completo
-        self.edad = edad
-        self.__tipo_identiicacion = tipo_identificacion
+        self.__fecha_nacimiento = fecha_nacimiento
+        self.__tipo_identificacion = tipo_identificacion
         self.__identificacion = identificacion
         self.__nacionalidad = nacionalidad
 
 
     def get_tipo_identificacion (self):
-        return self.__tipo_identiicacion
+        return self.__tipo_identificacion
 
     def set_tipo_identificacion (self, tipo_identificacion):
-        self.__tipo_identiicacion = tipo_identificacion
+        self.__tipo_identificacion = tipo_identificacion
 
     
     def get_identificacion (self):
@@ -39,34 +40,20 @@ class Persona:
         self.__nacionalidad = nacionalidad
 
 
-    def mostrar_datos(self):
-        print(f'Nombre completo: {self.nombre_completo}')
-        print(f'Edad: {self.edad}')
-        print(f'Tipo de Identificacion: {self.__tipo_identiicacion}')
-        print(f'Identificacion: {self.identificacion}')
-        print(f'Nacionalidad: {self.nacionalidad}')
-
-   # --- Métodos de las consignas ---
+    def calcular_edad(self):
+        fecha_actual = datetime.now()
+        edad = fecha_actual.year - self.__fecha_nacimiento.year
+        cumple_paso = (fecha_actual.month, fecha_actual.day) >= (self.__fecha_nacimiento.month, self.__fecha_nacimiento.day)
+        if not cumple_paso:
+            edad -= 1
+        return edad
 
     def es_mayor_de_edad(self):
-        if self.edad >= 18:
-            return True
-        else:
-            return False
-
-    def validar_identificacion(self, identificacion):
-        if identificacion == "" or identificacion == " ":
-            print("Error: La identificación no puede estar vacía.")
-            return False
-        else:
-            return True
+        return self.calcular_edad() >= 18
 
 
+persona1 = Persona("Santiago Ariel", datetime(2000, 3, 15), "DNI", "34567890", "Argentina")
+print("¿Es mayor de edad?:  ", persona1.es_mayor_de_edad())  # con el data time lo que hace es calcular realmente la edad de la persona y no solo se guia por un numero que le pasamos como parametro.
 
-persona1 = Persona("Carlos Gómez", 25, "DNI", "34567890", "Argentina")
-persona1.mostrar_datos()
-
-
-persona2 = Persona("Santi Pérez", 15, "DNI", "", "Uruguay")
-persona2.mostrar_datos()
-
+persona2 = Persona("Arian Palacios", datetime(2015, 6, 1), "DNI", "40111222", "Argentina")
+print("¿Es mayor de edad?:  ", persona2.es_mayor_de_edad())
