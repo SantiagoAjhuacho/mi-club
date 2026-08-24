@@ -10,7 +10,7 @@
 #● getters y setters
 
 
-from datetime import datetime #<---- Crear una fecha fija (de nacimiento, fundación, vencimiento).
+from datetime import datetime
 
 class Club:
     def __init__(self, nombre, descripcion, ubicacion, presidente, fecha_fundacion):
@@ -21,27 +21,35 @@ class Club:
         # fecha_fundacion debe ser un objeto de tipo datetime
         self.__fecha_fundacion = fecha_fundacion
 
-  # Metodo 1: Calcular Antigüedad
+    # 1. Modificar el presidente (cambio de autoridades)
+    def get_presidente(self):
+        return self.__presidente
+
+    def set_presidente(self, nuevo_presidente):
+        """Actualiza el presidente del club."""
+        self.__presidente = nuevo_presidente
+
+    def get_fecha_fundacion(self):
+        return self.__fecha_fundacion
+
+    # 2. Calcular Antigüedad
     def calcular_antiguedad(self):
-        # estoy guardando en una variable la fecha actual
-        fecha_actual = datetime.now() 
-        
-        # se hace el calculo para ver cuantos años tiene de antiguedad
+        fecha_actual = datetime.now()
         antiguedad = fecha_actual.year - self.__fecha_fundacion.year
-        
-        # aca ajusto por si no paso la fecha de aniversario
         cumpleanios_paso = (fecha_actual.month, fecha_actual.day) >= (self.__fecha_fundacion.month, self.__fecha_fundacion.day)
         if not cumpleanios_paso:
             antiguedad -= 1
-            
-        # Devolver el valor calculado
         return antiguedad
 
-
-    # Método 2: Determinar si es Institución Histórica (> 50 años)
+    # 3. Determinar si es Institución Histórica (> 50 años)
     def es_institucion_historica(self):
         return self.calcular_antiguedad() > 50
 
-club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes de gran altura", "Parque de los Patricios", "Talislao Zen", datetime(1876,8,3))
-print("Antiguedad del club:", club.calcular_antiguedad())
+
+club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes",
+            "Parque de los Patricios", "Talislao Zen", datetime(1876, 8, 3))
+print("Antigüedad:", club.calcular_antiguedad())
 print("Es institución histórica:", club.es_institucion_historica())
+
+club.set_presidente("Nuevo Presidente")
+print("Presidente actualizado:", club.get_presidente())

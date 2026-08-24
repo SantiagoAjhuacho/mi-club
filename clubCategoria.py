@@ -1,4 +1,5 @@
 from club import Club
+from datetime import datetime
 
 class ClubCategoria(Club):
     def __init__(self, nombre, descripcion, ubicacion, presidente, fecha_fundacion):
@@ -6,102 +7,93 @@ class ClubCategoria(Club):
         self.__socios = []
         self.actividades = []
 
-    def socios (self):
+    def socios(self):
         return self.__socios
 
-
-    def set_socios (self, socios):
+    def set_socios(self, socios):
         self.__socios = socios
 
-    def agregar_socio(self, socio):
-        self.__socios.append(socio)
-    
     def mostrar_socios(self):
         if not self.__socios:
             print("No hay socios registrados.")
-            return print("· Lista de Socios: ")
+            return
+        print("· Lista de Socios:")
         for socio in self.__socios:
             print(f"Socio: {socio}")
 
-    def agregar_actividad(self, actividad):
-        self.__actividades.append(actividad)
-
-    def mostrar_socio(self):
-        for i in self.__socio:
-            print(i)
-    
     def mostrar(self):
         print("Nombre:  ", self.nombre)
         print("Descripcion: ", self.descripcion)
         print("Ubicacion:   ", self.ubicacion)
-        print("Presidente:  ", self.__presidente)
-        print("Fecha De Fundacion:  ", self.__fecha_fundacion)
-        
-#1)Incorporar la funcionalidad para registrar nuevos socios dentro de la categoría correspondiente.
+        print("Presidente:  ", self.get_presidente())
+        print("Fecha De Fundacion:  ", self.get_fecha_fundacion())
 
-    def registrar_socios(self,socio):
-        self.__socios.append(socio)
+    # 1. Registrar nuevos socios en la categoría
+    def registrar_socios(self, socio):
+        """Agrega un socio si aún no está registrado."""
+        if socio not in self.__socios:
+            self.__socios.append(socio)
+            return True
+        return False
 
-#2)Permitir eliminar socios de la categoría cuando estos dejen de pertenecer a ella.
-
+    # 2. Eliminar socios de la categoría
     def eliminar_socio(self, socio):
         if socio in self.__socios:
             self.__socios.remove(socio)
             print(f"Socio '{socio}' eliminado con éxito.")
-        else:
-            print(f"El socio '{socio}' no se encontró.")
+            return True
+        print(f"El socio '{socio}' no se encontró.")
+        return False
 
-#3)Implementar una búsqueda que permita localizar rápidamente un socio utilizando algún dato identificatorio.
-
-    def buscar_socio(self, nombre_socio):
+    # 3. Buscar un socio por dato identificatorio
+    def buscar_socio(self, dato_identificatorio):
+        """Busca un socio; funciona tanto si guardás strings como objetos Socio con get_identificacion()."""
         for socio in self.__socios:
-            if socio == nombre_socio:
-                print(f"Se a encontrado al socio {socio} está registrado en la suigiente categoria.")
+            identificador = socio.get_identificacion() if hasattr(socio, "get_identificacion") else socio
+            if identificador == dato_identificatorio:
+                print(f"Se encontró al socio: {socio}")
+                return socio
+        print("Socio no encontrado.")
+        return None
 
-#4)Obtener la cantidad total de socios registrados en la categoría.
-
+    # 4. Cantidad total de socios
     def cantidad_socio(self):
         return len(self.__socios)
 
-#5)Permitir agregar nuevas actividades deportivas, recreativas o culturales ofrecidas por el club. Permitir el
-
-    def actividad_nueva(self,actividad):
+    # 5. Agregar nueva actividad
+    def actividad_nueva(self, actividad):
         self.actividades.append(actividad)
-        print("agregando actividades nuevas")
+        print(f"Actividad '{actividad}' agregada.")
 
-#6)Permitir eliminar actividades que ya no se encuentren disponibles.
-
+    # 6. Eliminar actividad
     def eliminar_actividad(self, actividad):
         if actividad in self.actividades:
             self.actividades.remove(actividad)
-            print(f"Actividad '{actividad}' se a eliminado por completo")
+            print(f"Actividad '{actividad}' eliminada por completo.")
 
-#7)Mostrar un listado completo de las actividades que se realizan en la categoría.
+    # 7. Mostrar listado de actividades
     def mostrar_actividades(self):
         for i in self.actividades:
             print(i)
 
+    # 8. Porcentaje de socios activos
+    def porcentaje_socios_activos(self):
+        """Requiere que self.__socios contenga objetos Socio (con atributo .estado), no strings."""
+        if not self.__socios:
+            return 0
+        activos = sum(1 for s in self.__socios if getattr(s, "estado", None) == "Activo")
+        return (activos / len(self.__socios)) * 100
 
 
-club_deportivo = ClubCategoria("VoleyBall", "cancha Voley 18x9 metros", "Polideportivo Benito Quinquela Martín", "Gaston", "9/12/2000")
+club_deportivo = ClubCategoria("VoleyBall", "cancha Voley 18x9 metros","Polideportivo Benito Quinquela Martín", "Gaston", datetime(2000, 12, 9))
 
-
-club_deportivo.actividad_nueva("actividad Torneo 2vs2")
-club_deportivo.actividad_nueva("actividad de Rugby")
-
+club_deportivo.actividad_nueva("Torneo 2vs2")
+club_deportivo.actividad_nueva("Rugby")
 club_deportivo.mostrar_actividades()
 
-
-club_deportivo.agregar_socio("Changuito")
-club_deportivo.agregar_socio("Benja")
-club_deportivo.agregar_socio("Wuelco")
-
-
+club_deportivo.registrar_socios("Changuito")
+club_deportivo.registrar_socios("Benja")
 club_deportivo.mostrar_socios()
 
-
-club_deportivo.eliminar_socio("Changote")
 club_deportivo.eliminar_socio("Changuito")
-
-
-club_deportivo.buscar_socio("Facu")
+club_deportivo.buscar_socio("Benja")
