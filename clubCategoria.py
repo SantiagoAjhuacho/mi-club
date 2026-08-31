@@ -7,7 +7,7 @@ class ClubCategoria(Club):
         self.__socios = []
         self.actividades = []
 
-    def socios(self):
+    def get_socios(self):
         return self.__socios
 
     def set_socios(self, socios):
@@ -58,12 +58,13 @@ class ClubCategoria(Club):
 
     # 4. Cantidad total de socios
     def cantidad_socio(self):
-        return len(self.__socios)
+        return len(self.__socio) #que devuelva como mensaje si no hay socios
 
     # 5. Agregar nueva actividad
     def actividad_nueva(self, actividad):
         self.actividades.append(actividad)
         print(f"Actividad '{actividad}' agregada.")
+        #hacer una condicion para verifica si ya esta la actividad y para eliminar
 
     # 6. Eliminar actividad
     def eliminar_actividad(self, actividad):
@@ -84,6 +85,7 @@ class ClubCategoria(Club):
         activos = sum(1 for s in self.__socios if getattr(s, "estado", None) == "Activo")
         return (activos / len(self.__socios)) * 100
 
+    #modificar este metodo como nosotros estuvimos trabajando
 
 club_deportivo = ClubCategoria("VoleyBall", "cancha Voley 18x9 metros","Polideportivo Benito Quinquela Martín", "Gaston", datetime(2000, 12, 9))
 

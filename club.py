@@ -47,7 +47,7 @@ class Club:
 
 
 club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes",
-            "Parque de los Patricios", "Talislao Zen", datetime(1876, 8, 3))
+            "Parque de los Patricios", "Talislao Zen", datetime(1876, 8, 3)) #la fecha debe de ser str
 print("Antigüedad:", club.calcular_antiguedad())
 print("Es institución histórica:", club.es_institucion_historica())
 

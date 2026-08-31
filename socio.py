@@ -18,7 +18,7 @@ from cuota import Cuota
 
 class Socio(Persona):
     def __init__(self, nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad,
-                 fecha_inscripcion, estado="Activo", usuario="", contrasenia=""):
+    fecha_inscripcion, estado="Activo", usuario="", contrasenia=""):
         super().__init__(nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad)
         self.clubes = []
         self.cuotas = []
@@ -74,15 +74,21 @@ class Socio(Persona):
 
     def cantidad_cuotas_pendientes(self):
         """Devuelve el total de cuotas impagas."""
-        return sum(1 for cuota in self.cuotas if cuota.get_estado() != "pagada")
-
+        cuotas_impagas = 0
+        for cuota in self.cuotas:
+            if cuota.get_estado() != "pagada":
+                cuotas_impagas +=1
+        return cuotas_impagas
+    
     def suspender(self):
         """Cambia el estado del socio a Suspendido."""
         self.estado = "Suspendido"
+        #hacer una condicion que antes de suspender al socio verifique si esta suspendido ya antes
 
     def reactivar(self):
         """Reactiva al socio para que pueda volver a utilizar los servicios."""
         self.estado = "Activo"
+        #hacer una condicion para verificar si el socio esta ya activo o no
 
     def actualizar_contrasenia(self, contrasenia_actual, nueva_contrasenia):
         """Permite actualizar la contraseña previa verificación de la actual."""

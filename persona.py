@@ -12,7 +12,7 @@
 from datetime import datetime
 
 class Persona:
-    def __init__(self, nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad):
+    def __init__(self, nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad): #Me olvide de poner el atributo edad
         self.nombre_completo = nombre_completo
         self.__fecha_nacimiento = fecha_nacimiento
         self.__tipo_identificacion = tipo_identificacion
@@ -42,6 +42,7 @@ class Persona:
         fecha_actual = datetime.now()
         edad = fecha_actual.year - self.__fecha_nacimiento.year
         cumple_paso = (fecha_actual.month, fecha_actual.day) >= (self.__fecha_nacimiento.month, self.__fecha_nacimiento.day)
+        #cuando agregue el atributo edad tengo que modificar este metodo
         if not cumple_paso:
             edad -= 1
         return edad
@@ -52,9 +53,6 @@ class Persona:
     # 2. Verificar que la identificación sea válida y no esté vacía
     def validar_identificacion(self):
         """Valida que self.__identificacion no esté vacía ni compuesta solo de espacios."""
-        if self.__identificacion is None:
-            print("Error: La identificación no puede estar vacía.")
-            return False
         if str(self.__identificacion).strip() == "":
             print("Error: La identificación no puede estar vacía.")
             return False

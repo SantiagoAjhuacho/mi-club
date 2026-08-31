@@ -40,6 +40,7 @@ class Cuota:
     def dias_para_vencimiento(self):
         """Devuelve días para vencer (negativo si ya venció)."""
         fecha_actual = datetime.now()
+        #abs para convertir numeros negativos a positivos
         diferencia = self.fecha_de_vencimiento - fecha_actual
         return diferencia.days
 
@@ -51,7 +52,7 @@ class Cuota:
         self.__estado = "pendiente"
 
 
-cuota1= Cuota("pendiente", datetime(2026, 12, 1), "Diciembre 2026")
+cuota1= Cuota("pendiente", datetime(2026, 12, 1), "Diciembre 2026") #un servicio solo se estima 30 dias
 print("Estado inicial:", cuota1.get_estado())
 print("¿Vencida?:", cuota1.esta_vencida())
 print("Días para vencer:", cuota1.dias_para_vencimiento())
