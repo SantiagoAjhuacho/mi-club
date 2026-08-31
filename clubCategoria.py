@@ -30,7 +30,7 @@ class ClubCategoria(Club):
 
     # 1. Registrar nuevos socios en la categoría
     def registrar_socios(self, socio):
-        """Agrega un socio si aún no está registrado."""
+        #Agrega un socio si aún no está registrado
         if socio not in self.__socios:
             self.__socios.append(socio)
             return True
@@ -47,9 +47,9 @@ class ClubCategoria(Club):
 
     # 3. Buscar un socio por dato identificatorio
     def buscar_socio(self, dato_identificatorio):
-        """Busca un socio; funciona tanto si guardás strings como objetos Socio con get_identificacion()."""
+        #Busca un socio; funciona tanto si guardás strings como objetos Socio con get_identificacion()
         for socio in self.__socios:
-            identificador = socio.get_identificacion() if hasattr(socio, "get_identificacion") else socio
+            identificador = socio.get_identificacion() if hasattr(socio, "get_identificacion") else socio # hasattr(objeto, "nombre") te dice True o False según si ese objeto tiene ese atributo o método, para que puedas preguntarlo antes de usarlo y evitar que el programa explote si no lo tiene
             if identificador == dato_identificatorio:
                 print(f"Se encontró al socio: {socio}")
                 return socio
