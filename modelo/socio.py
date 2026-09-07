@@ -9,9 +9,8 @@
 #Métodos:
 
 #● getters y setters
-
-from clubCategoria import ClubCategoria
 from datetime import datetime
+from clubCategoria import ClubCategoria
 
 class Administrador:
     def __init__(self, nombre, usuario, contrasenia):
@@ -33,17 +32,26 @@ class Administrador:
 
     #Registrar nuevos socios en un club
     def registrar_socio(self, club, socio):
-        """El admin le pide al club que registre al socio."""
+        """El admin verifica si el socio ya está registrado antes de pedirle al club que lo registre."""
+        if socio in club.get_socios():
+            print(f"El socio '{socio.nombre_completo}' ya está registrado en el club.")
+            return False
         return club.registrar_socios(socio)
 
     #Eliminar socios de un club
     def suspender_socio(self, socio):
-        """El admin le pide al socio que se suspenda a sí mismo (socio.suspender() ya verifica si ya estaba suspendido)."""
+        """El admin verifica si el socio ya está suspendido antes de pedirle que se suspenda."""
+        if socio.estado == "Suspendido":
+            print(f"El socio '{socio.nombre_completo}' ya se encuentra suspendido.")
+            return False
         return socio.suspender()
 
     #Reactivar socios de un club
     def reactivar_socio(self, socio):
-        """socio.reactivar() ya verifica si ya estaba activo."""
+        """El admin verifica si el socio ya está activo antes de pedirle que se reactive."""
+        if socio.estado == "Activo":
+            print(f"El socio '{socio.nombre_completo}' ya se encuentra activo.")
+            return False
         return socio.reactivar()
 
     # Listar socios de un club
