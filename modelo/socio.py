@@ -10,7 +10,6 @@
 
 #● getters y setters
 from datetime import datetime
-from clubCategoria import ClubCategoria
 
 class Administrador:
     def __init__(self, nombre, usuario, contrasenia):
@@ -66,10 +65,7 @@ class Administrador:
 
 admin = Administrador("Ana Gómez", "admin", "admin123")
 
-print(admin.verificar_credenciales("admin", "admin123"))    # True
-print(admin.verificar_credenciales("admin", "wrongpass"))   # False
-print(admin.verificar_credenciales("wronguser", "admin123"))# False
-print(admin.verificar_credenciales("wronguser", "wrongpass"))# False
-
-
-club = ClubCategoria("Club Deportivo", "Cancha de fútbol", "Buenos Aires", "Gaston", datetime(2010, 5, 20))
+print("¿La contraseña o usuario son correctas?",admin.verificar_credenciales("admin", "admin123"))    # True
+print("¿La contraseña o usuario son correctas?",admin.verificar_credenciales("admin", "wrongpass"))   # False
+print("¿La contraseña o usuario son correctas?",admin.verificar_credenciales("wronguser", "admin123"))# False
+print("¿La contraseña o usuario son correctas?",admin.verificar_credenciales("wronguser", "wrongpass"))# False

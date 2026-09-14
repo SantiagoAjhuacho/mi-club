@@ -10,7 +10,6 @@
 
 #● getters y setters
 
-from clubCategoria import ClubCategoria
 from datetime import datetime
 
 class Administrador:
