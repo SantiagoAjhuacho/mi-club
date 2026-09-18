@@ -12,27 +12,26 @@
 
 from datetime import datetime
 
+
 class Club:
     def __init__(self, nombre, descripcion, ubicacion, presidente, fecha_fundacion):
         self.nombre = nombre
         self.descripcion = descripcion
         self.ubicacion = ubicacion
         self.__presidente = presidente
-        # fecha_fundacion debe ser un objeto de tipo datetime
-        self.__fecha_fundacion = fecha_fundacion
+        self.__fecha_fundacion = fecha_fundacion  # debe ser un objeto datetime
 
-    # 1. Modificar el presidente (cambio de autoridades)
+    # Clase Club - Punto 1: Permitir modificar el presidente del club cuando se produzca un cambio de autoridades.
     def get_presidente(self):
         return self.__presidente
 
     def set_presidente(self, nuevo_presidente):
-        """Actualiza el presidente del club."""
         self.__presidente = nuevo_presidente
 
     def get_fecha_fundacion(self):
         return self.__fecha_fundacion
 
-    # 2. Calcular Antigüedad
+    # Clase Club - Punto 2: Mostrar la antigüedad del club (años desde la fundación hasta hoy).
     def calcular_antiguedad(self):
         fecha_actual = datetime.now()
         antiguedad = fecha_actual.year - self.__fecha_fundacion.year
@@ -41,15 +40,16 @@ class Club:
             antiguedad -= 1
         return antiguedad
 
-    # 3. Determinar si es Institución Histórica (> 50 años)
+    # Clase Club - Punto 3: Determinar si el club es institución histórica (más de 50 años).
     def es_institucion_historica(self):
         return self.calcular_antiguedad() > 50
 
-
-club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes",
-            "Parque de los Patricios", "Talislao Zen", datetime(1876, 8, 3)) #la fecha debe de ser str
-print("Antigüedad:", club.calcular_antiguedad())
-print("Es institución histórica:", club.es_institucion_historica())
-
-club.set_presidente("Nuevo Presidente")
-print("Presidente actualizado:", club.get_presidente())
+    # Devuelve la info del club como diccionario (reemplaza al viejo mostrar() con print, según Tarea A).
+    def obtener_info(self):
+        return {
+            "nombre": self.nombre, #<--- lo que hace las comas son separar los elementos del diccionario, no es un error de sintaxis.
+            "descripcion": self.descripcion,
+            "ubicacion": self.ubicacion,
+            "presidente": self.__presidente,
+            "fecha_fundacion": self.__fecha_fundacion,
+        }
