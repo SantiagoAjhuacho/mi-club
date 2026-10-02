@@ -63,10 +63,11 @@ crear_tablas(conexion)
 
 
 carlos = Socio(
-    "Carlos Ramos ", 30, "DNI", "40322345", "Argentina",
-    date(2026, 1, 1), "Activo", "carlos", "clave123"
+    "Carlos Ramos ", date(1993, 5, 15), "DNI", "40322345", "Argentina",
+    date(2026, 1, 1), "socio", "Activo", "carlos", "clave123"
 )
 guardar_socio(conexion, carlos)
 print("Socio guardado.")
 
 conexion.close()
+# por ahora ya funciona correctamente, pero luego se puede agregar la verificación de que no se guarde un socio con el mismo usuario o identificación.

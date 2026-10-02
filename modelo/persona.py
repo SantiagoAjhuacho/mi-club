@@ -15,7 +15,7 @@ from datetime import datetime
 class Persona:
     def __init__(self, nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad):
         self.nombre_completo = nombre_completo
-        self.__fecha_nacimiento = fecha_nacimiento
+        self.fecha_nacimiento = fecha_nacimiento
         self.__tipo_identificacion = tipo_identificacion
         self.__identificacion = identificacion
         self.__nacionalidad = nacionalidad
@@ -45,8 +45,8 @@ class Persona:
     # Calcula la edad comparando la fecha de nacimiento con la fecha actual (no depende de un número pasado a mano).
     def calcular_edad(self):
         fecha_actual = datetime.now()
-        edad = fecha_actual.year - self.__fecha_nacimiento.year
-        cumple_paso = (fecha_actual.month, fecha_actual.day) >= (self.__fecha_nacimiento.month, self.__fecha_nacimiento.day)
+        edad = fecha_actual.year - self.fecha_nacimiento.year
+        cumple_paso = (fecha_actual.month, fecha_actual.day) >= (self.fecha_nacimiento.month, self.fecha_nacimiento.day)
         if not cumple_paso:
             edad -= 1
         return edad

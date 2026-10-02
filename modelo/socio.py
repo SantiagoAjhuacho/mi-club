@@ -10,21 +10,23 @@
 
 #● getters y setters
 from modelo.persona import Persona
+import sqlite3
 
 
 class Socio(Persona):
     # Tarea C: Socio hereda de Persona y usa super().__init__() para inicializar lo heredado.
     # Tarea D: se agrega el atributo "rol" (reemplaza a la clase Administrador suelta).
     def __init__(self, nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad,
-                 fecha_inscripcion, estado="Activo", usuario="", contrasenia="", rol="socio"):
+                 fecha_inscripcion, rol, estado="Activo", usuario="", contrasenia=""):
         super().__init__(nombre_completo, fecha_nacimiento, tipo_identificacion, identificacion, nacionalidad)
         self.clubes = []
         self.cuotas = []
         self.fecha_inscripcion = fecha_inscripcion
         self.estado = estado  # "Activo" o "Suspendido"
+        self.rol = rol  # "socio" o "admin"
         self.__usuario = usuario
         self.__contrasenia = contrasenia
-        self.__rol = rol  # "socio" o "admin"
+
 
     # Getter/setter de usuario
     def get_usuario(self):
@@ -40,16 +42,8 @@ class Socio(Persona):
     def set_contrasenia(self, contrasenia):
         self.__contrasenia = contrasenia
 
-    # Getter/setter de rol
-    def get_rol(self):
-        return self.__rol
-
-    def set_rol(self, rol):
-        self.__rol = rol
-
-    # Tarea D: método que consulta el rol. Reemplaza la necesidad de una clase Administrador aparte.
     def es_admin(self):
-        return self.__rol == "admin"
+        return self.rol == "admin"
 
     # Clase Socio - Punto 1: Permitir que un socio pueda asociarse a uno o más clubes.
     def asociarse_a_club(self, club):
@@ -109,4 +103,4 @@ class Socio(Persona):
 
     # Representación legible del objeto (para que print(socio) no muestre una dirección de memoria)
     def __str__(self):
-        return f"{self.nombre_completo} ({self.estado}, rol: {self.__rol})"
+        return f"{self.nombre_completo} ({self.estado}, rol: {self.rol})"
