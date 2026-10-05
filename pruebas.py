@@ -63,8 +63,8 @@ crear_tablas(conexion)
 
 
 carlos = Socio(
-    "Carlos Ramos ", date(1993, 5, 15), "DNI", "40322345", "Argentina",
-    date(2026, 1, 1), "socio", "Activo", "carlos", "clave123"
+    "Carlitos Ramirez ", date(1993, 5, 10), "DNI", "40322775", "Argentina",
+    date(2026, 1, 1), "socio", "Activo", "carlosramirez", "clave111"
 )
 guardar_socio(conexion, carlos)
 print("Socio guardado.")

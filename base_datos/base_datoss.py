@@ -1,4 +1,7 @@
 import sqlite3
+from datetime import date
+from modelo.cuota import Cuota
+
 
 def conectar(ruta):
     """Abre una conexión a la base de datos en la ruta indicada.
@@ -6,11 +9,11 @@ def conectar(ruta):
     conexion = sqlite3.connect(ruta)
     return conexion
 
+
 def crear_tablas(conexion):
     """Crea las tablas necesarias si no existen."""
     cursor = conexion.cursor()
 
-    # Tabla 1: socios (la que ya tenías)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS socios (
             id                  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,7 +30,6 @@ def crear_tablas(conexion):
         )
     """)
 
-    # Tabla 2: cuotas (la nueva)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS cuotas (
             id                INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +42,7 @@ def crear_tablas(conexion):
     """)
 
     conexion.commit()
+
 
 def guardar_socio(conexion, socio):
     """Recibe un objeto Socio y lo guarda en la tabla socios."""
@@ -60,3 +63,46 @@ def guardar_socio(conexion, socio):
         socio.get_contrasenia(),
     ))
     conexion.commit()
+
+
+def guardar_cuota(conexion, usuario, cuota):
+    """Guarda una cuota asociada al socio con ese usuario."""
+    cursor = conexion.cursor()
+    cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
+    fila = cursor.fetchone()
+    if fila is None:
+        raise ValueError("El socio no existe")
+    socio_id = fila[0]
+
+    cursor.execute("""
+        INSERT INTO cuotas (socio_id, periodo, estado, fecha_vencimiento)
+        VALUES (?, ?, ?, ?)
+    """, (
+        socio_id,
+        cuota.periodo,
+        cuota.get_estado(),
+        cuota.fecha_vencimiento.isoformat(),
+    ))
+    conexion.commit()
+
+
+def listar_cuotas_de_socio(conexion, usuario):
+    """Devuelve una lista de objetos Cuota para el socio con ese usuario."""
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
+    fila = cursor.fetchone()
+    if fila is None:
+        return []
+    socio_id = fila[0]
+
+    cursor.execute(
+        "SELECT periodo, estado, fecha_vencimiento FROM cuotas WHERE socio_id = ?",
+        (socio_id,)
+    )
+
+    cuotas = []
+    for periodo, estado, fecha_vencimiento in cursor.fetchall():
+        cuota = Cuota(estado, date.fromisoformat(fecha_vencimiento), periodo)
+        cuotas.append(cuota)
+    return cuotas
