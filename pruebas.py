@@ -71,3 +71,4 @@ print("Socio guardado.")
 
 conexion.close()
 # por ahora ya funciona correctamente, pero luego se puede agregar la verificación de que no se guarde un socio con el mismo usuario o identificación.
+
