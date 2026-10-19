@@ -171,7 +171,6 @@ def guardar_cuota(conexion, usuario, cuota):
 #  lista las cuotas de un socio.
 # Devuelve una lista de objetos Cuota (o una lista vacía si el socio no existe).
 def listar_cuotas_de_socio(conexion, usuario):
-    """Devuelve una lista de objetos Cuota para el socio con ese usuario."""
     cursor = conexion.cursor()
 
     cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
@@ -195,7 +194,7 @@ def listar_cuotas_de_socio(conexion, usuario):
 # guardar_club(conexion, club).
 # Guarda el club en la tabla clubes, solo si todavía no existe uno.
 def guardar_club(conexion, club):
-    """Guarda el club en la tabla clubes (solo si no existe uno)."""
+   # Guarda un club en la tabla clubes si no hay ninguno guardado.
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM clubes LIMIT 1")
     if cursor.fetchone() is not None:
@@ -216,7 +215,7 @@ def guardar_club(conexion, club):
 # guardar_actividad(conexion, actividad).
 # Guarda la actividad en la tabla actividades y la vincula al club cargado (club_id).
 def guardar_actividad(conexion, actividad):
-    """Guarda una actividad en la tabla actividades, vinculada al club."""
+    # Guarda una actividad en la tabla actividades y la vincula al club cargado (club_id).
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM clubes LIMIT 1")
     fila = cursor.fetchone()
@@ -232,7 +231,7 @@ def guardar_actividad(conexion, actividad):
 # anotar_socio_actividad(conexion, usuario, nombre_actividad).
 # Anota al socio en la actividad (INSERT OR IGNORE evita duplicados).
 def anotar_socio_actividad(conexion, usuario, nombre_actividad):
-    """Anota al socio en la actividad indicada."""
+    # Anota al socio en la actividad indicada.
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
     fila = cursor.fetchone()
@@ -258,7 +257,7 @@ def anotar_socio_actividad(conexion, usuario, nombre_actividad):
 # desanotar_socio_actividad(conexion, usuario, nombre_actividad).
 # Saca al socio de la actividad (borra la fila de socio_actividad).
 def desanotar_socio_actividad(conexion, usuario, nombre_actividad):
-    """Saca al socio de la actividad indicada."""
+    # Saca al socio de la actividad indicada.
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
     fila = cursor.fetchone()
@@ -284,7 +283,7 @@ def desanotar_socio_actividad(conexion, usuario, nombre_actividad):
 # listar_actividades_de_socio(conexion, usuario).
 # Usa JOIN para juntar actividades con socio_actividad y devuelve una lista de objetos Actividad.
 def listar_actividades_de_socio(conexion, usuario):
-    """Devuelve una lista de objetos Actividad del socio con ese usuario."""
+    # Devuelve una lista de objetos Actividad para el socio con ese usuario.
     cursor = conexion.cursor()
     cursor.execute("""
         SELECT a.nombre, a.dia, a.horario
@@ -303,7 +302,7 @@ def listar_actividades_de_socio(conexion, usuario):
 #Paso 8: obtener_club(conexion).
 # Devuelve el objeto Club o None si no hay club cargado.
 def obtener_club(conexion):
-    """Devuelve el objeto Club o None si no hay club cargado."""
+   # Devuelve el objeto Club cargado en la BD o None si no hay club.
     cursor = conexion.cursor()
     cursor.execute("SELECT nombre, descripcion, ubicacion, presidente, fecha_fundacion FROM clubes LIMIT 1")
     fila = cursor.fetchone()

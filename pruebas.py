@@ -24,51 +24,56 @@
 #print("¿Pago registrado?:", socio1.registrar_pago_cuota("Cuota Julio 2024"))
 #print("¿Tiene deudas?:", socio1.tiene_deudas())
 
-## --- Pruebas Clase Club ---
-#club = Club("Instituto Deportivo de la gloria", "Establecimiento de deportes","Parque de los Patricios", "Talislao Zen", datetime(1876, 8, 3))
-#print("Antigüedad del club:", club.calcular_antiguedad())
-#print("¿Es institución histórica?:", club.es_institucion_historica())
-#print("Info del club:", club.obtener_info())
-
-#club.set_presidente("Nuevo Presidente")
-#print("Presidente actualizado:", club.get_presidente())
-
-## --- Pruebas Clase Actividad ---
-#actividad1 = Actividad("Voley", "Lunes", "18:00 a 20:00")
-#print("Info de la actividad:", actividad1.obtener_informacion())
-
-## --- Pruebas de estado del Socio ---
-#socio1.suspender()
-#print("Estado tras suspender:", socio1.estado)
-#socio1.reactivar()
-#print("Estado tras reactivar:", socio1.estado)
-
-
-## --- Pruebas de autenticación ---
-#print("¿Login correcto?:", socio1.iniciar_sesion("juanperez", "pass123"))
-#print("¿Contraseña actualizada?:", socio1.actualizar_contrasenia("pass123", "nueva_pass"))
-
-"""Prueba de la capa de base de datos."""
 from datetime import date
-from pathlib import Path
-from base_datos.base_datoss import conectar, crear_tablas, guardar_socio
+from base_datos.base_datoss import (
+    conectar, crear_tablas, guardar_socio, buscar_socio_por_usuario,
+    guardar_cuota, listar_cuotas_de_socio, guardar_club, obtener_club,
+    guardar_actividad, anotar_socio_actividad, desanotar_socio_actividad,
+    listar_actividades_de_socio,
+)
 from modelo.socio import Socio
-import sqlite3
+from modelo.cuota import Cuota
+from modelo.club import Club
+from modelo.actividad import Actividad
 
-RUTA = Path(__file__).parent / "club.db"
+RUTA = "club.db"
 
-
-conexion = conectar(str(RUTA))
+conexion = conectar(RUTA)
 crear_tablas(conexion)
 
+# Consigna I: guardar un socio
+# (con el if, no se rompe el codigo ya que si ya existe el socio no se vuelve a guardar)
+if buscar_socio_por_usuario(conexion, "carlosramirez") is None:
+    carlos = Socio(
+        "Carlitos Ramirez", date(1993, 5, 10), "DNI", "40322775", "Argentina",
+        date(2026, 1, 1), "socio", "Activo", "carlosramirez", "clave111"
+    )
+    guardar_socio(conexion, carlos)
+    print("Socio guardado.")
 
-carlos = Socio(
-    "Carlitos Ramirez ", date(1993, 5, 10), "DNI", "40322775", "Argentina",
-    date(2026, 1, 1), "socio", "Activo", "carlosramirez", "clave111"
-)
-guardar_socio(conexion, carlos)
-print("Socio guardado.")
+#  Consigna II, Paso 1: buscar socio por usuario 
+print("Socio encontrado:", buscar_socio_por_usuario(conexion, "carlosramirez"))
+print("Usuario inexistente:", buscar_socio_por_usuario(conexion, "nadie"))
+
+# Cuotas (consigna anterior) 
+guardar_cuota(conexion, "carlosramirez", Cuota("Pendiente", date(2026, 11, 30), "Noviembre 2026"))
+for c in listar_cuotas_de_socio(conexion, "carlosramirez"):
+    print("Cuota:", c.periodo, c.get_estado())
+
+#Consigna II, Pasos 5 y 8: club
+guardar_club(conexion, Club("Instituto Deportivo de la Gloria", "Club de deportes","Parque de los Patricios", "Talislao Zen", date(1960, 8, 3)))
+club = obtener_club(conexion)
+print("Club:", club.nombre, "-", club.calcular_antiguedad(), "años")
+
+#Consigna II, Pasos 5, 6 y 7: actividades
+guardar_actividad(conexion, Actividad("Futbol", "Lunes", "18:00"))
+guardar_actividad(conexion, Actividad("Handball", "Martes", "19:00"))
+print(anotar_socio_actividad(conexion, "carlosramirez", "Futbol"))
+print(anotar_socio_actividad(conexion, "nadie", "Futbol"))
+print(anotar_socio_actividad(conexion, "carlosramirez", "Ajedrez"))
+for a in listar_actividades_de_socio(conexion, "carlosramirez"):
+    print("Actividad:", a.obtener_informacion())
+print(desanotar_socio_actividad(conexion, "carlosramirez", "Futbol"))
+print("Actividades tras desanotar:", len(listar_actividades_de_socio(conexion, "carlosramirez")))
 
 conexion.close()
-# por ahora ya funciona correctamente, pero luego se puede agregar la verificación de que no se guarde un socio con el mismo usuario o identificación.
-
