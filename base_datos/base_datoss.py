@@ -1,28 +1,21 @@
-import sqlite3
-from datetime import date #date es para convertir las fechas de la BD a objetos date y viceversa
+import sqlite3 # el módulo sqlite3 es parte de la librería estándar de Python y permite trabajar con bases de datos SQLite
+from datetime import date #el datetime lo uso y lo importo aca ya que me sirve para convertir de string a date y viceversa, y lo uso en varias funciones de este archivo
 from modelo.socio import Socio
 from modelo.cuota import Cuota
 from modelo.club import Club
 from modelo.actividad import Actividad
 
 
-# Conectar a la base de datos.
-# Abre (o crea si no existe) el archivo .db y devuelve la conexión.
 def conectar(ruta):
-    """Abre una conexión a la base de datos en la ruta indicada.
-    Si el archivo no existe, lo crea automáticamente."""
+    #Conecta a la base de datos SQLite en la ruta especificada. Si el archivo no existe, lo crea automáticamente.
     conexion = sqlite3.connect(ruta)
     return conexion
 
 
-# Crear la tabla de socios.
-# Tabla cuotas, con socio_id que referencia a socios.
-# Tablas clubes, actividades y socio_actividad.
 def crear_tablas(conexion):
     """Crea las tablas necesarias si no existen."""
     cursor = conexion.cursor()
 
-    # Tabla socios 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS socios (
             id                  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +32,6 @@ def crear_tablas(conexion):
         )
     """)
 
-    # Tabla cuotas (BD II - Recap)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS cuotas (
             id                INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +43,7 @@ def crear_tablas(conexion):
         )
     """)
 
-    # Tabla clubes (BD II - Paso 2)
+    # Paso 2 - Tabla de clubes
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS clubes (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +55,7 @@ def crear_tablas(conexion):
         )
     """)
 
-    # Tabla actividades (BD II - Paso 3): cada actividad pertenece a un club (club_id)
+    # Paso 3 - Tabla de actividades
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS actividades (
             id      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,7 +67,7 @@ def crear_tablas(conexion):
         )
     """)
 
-    # Tabla socio_actividad (BD II - Paso 4): relación muchos a muchos entre socios y actividades
+    # Paso 4 - Tabla socio_actividad (muchos a muchos)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS socio_actividad (
             socio_id INTEGER,
@@ -89,8 +81,6 @@ def crear_tablas(conexion):
     conexion.commit()
 
 
-# Función para guardar un socio.
-# Recibe un objeto Socio y lo inserta en la tabla socios (las fechas se guardan como texto con isoformat()).
 def guardar_socio(conexion, socio):
     """Recibe un objeto Socio y lo guarda en la tabla socios."""
     cursor = conexion.cursor()
@@ -112,8 +102,7 @@ def guardar_socio(conexion, socio):
     conexion.commit()
 
 
-# Buscar un socio por usuario (sirve para el login).
-# Devuelve el objeto Socio completo o None si no existe. El id de la BD se descarta con _id.
+# Paso 1 - Buscar un socio por usuario (sirve para el login)
 def buscar_socio_por_usuario(conexion, usuario):
     """Devuelve el objeto Socio con ese usuario, o None si no existe."""
     cursor = conexion.cursor()
@@ -133,11 +122,11 @@ def buscar_socio_por_usuario(conexion, usuario):
 
     return Socio(
         nombre_completo,
-        date.fromisoformat(fecha_nacimiento), #fromisoformat convierte el texto de la BD a un objeto date
+        date.fromisoformat(fecha_nacimiento),
         tipo_identificacion,
         identificacion,
         nacionalidad,
-        date.fromisoformat(fecha_inscripcion), #fromisoformat convierte el texto de la BD a un objeto date
+        date.fromisoformat(fecha_inscripcion),
         rol,
         estado,
         usuario,
@@ -145,8 +134,6 @@ def buscar_socio_por_usuario(conexion, usuario):
     )
 
 
-# guardar_cuota(conexion, usuario, cuota): guarda una cuota para un socio.
-# Busca el id del socio por su usuario y lo usa como socio_id en la tabla cuotas.
 def guardar_cuota(conexion, usuario, cuota):
     """Guarda una cuota asociada al socio con ese usuario."""
     cursor = conexion.cursor()
@@ -168,9 +155,8 @@ def guardar_cuota(conexion, usuario, cuota):
     conexion.commit()
 
 
-#  lista las cuotas de un socio.
-# Devuelve una lista de objetos Cuota (o una lista vacía si el socio no existe).
 def listar_cuotas_de_socio(conexion, usuario):
+    """Devuelve una lista de objetos Cuota para el socio con ese usuario."""
     cursor = conexion.cursor()
 
     cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
@@ -191,10 +177,9 @@ def listar_cuotas_de_socio(conexion, usuario):
     return cuotas
 
 
-# guardar_club(conexion, club).
-# Guarda el club en la tabla clubes, solo si todavía no existe uno.
+# Paso 5 - Funciones de club y actividades
 def guardar_club(conexion, club):
-   # Guarda un club en la tabla clubes si no hay ninguno guardado.
+    """Guarda el club en la tabla clubes (solo si no existe uno)."""
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM clubes LIMIT 1")
     if cursor.fetchone() is not None:
@@ -212,10 +197,8 @@ def guardar_club(conexion, club):
     conexion.commit()
 
 
-# guardar_actividad(conexion, actividad).
-# Guarda la actividad en la tabla actividades y la vincula al club cargado (club_id).
 def guardar_actividad(conexion, actividad):
-    # Guarda una actividad en la tabla actividades y la vincula al club cargado (club_id).
+    """Guarda una actividad en la tabla actividades, vinculada al club."""
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM clubes LIMIT 1")
     fila = cursor.fetchone()
@@ -228,10 +211,9 @@ def guardar_actividad(conexion, actividad):
     conexion.commit()
 
 
-# anotar_socio_actividad(conexion, usuario, nombre_actividad).
-# Anota al socio en la actividad (INSERT OR IGNORE evita duplicados).
+# Paso 6 - Anotarse y desanotarse
 def anotar_socio_actividad(conexion, usuario, nombre_actividad):
-    # Anota al socio en la actividad indicada.
+    """Anota al socio en la actividad indicada."""
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
     fila = cursor.fetchone()
@@ -254,10 +236,8 @@ def anotar_socio_actividad(conexion, usuario, nombre_actividad):
     return f"Te anotaste en {nombre_actividad}."
 
 
-# desanotar_socio_actividad(conexion, usuario, nombre_actividad).
-# Saca al socio de la actividad (borra la fila de socio_actividad).
 def desanotar_socio_actividad(conexion, usuario, nombre_actividad):
-    # Saca al socio de la actividad indicada.
+    """Saca al socio de la actividad indicada."""
     cursor = conexion.cursor()
     cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
     fila = cursor.fetchone()
@@ -280,10 +260,9 @@ def desanotar_socio_actividad(conexion, usuario, nombre_actividad):
     return f"Te desanotaste de {nombre_actividad}."
 
 
-# listar_actividades_de_socio(conexion, usuario).
-# Usa JOIN para juntar actividades con socio_actividad y devuelve una lista de objetos Actividad.
+# Paso 7 - Listar actividades de un socio
 def listar_actividades_de_socio(conexion, usuario):
-    # Devuelve una lista de objetos Actividad para el socio con ese usuario.
+    """Devuelve una lista de objetos Actividad del socio con ese usuario."""
     cursor = conexion.cursor()
     cursor.execute("""
         SELECT a.nombre, a.dia, a.horario
@@ -299,10 +278,9 @@ def listar_actividades_de_socio(conexion, usuario):
     return actividades
 
 
-#Paso 8: obtener_club(conexion).
-# Devuelve el objeto Club o None si no hay club cargado.
+# Paso 8 - Obtener el club
 def obtener_club(conexion):
-   # Devuelve el objeto Club cargado en la BD o None si no hay club.
+    """Devuelve el objeto Club o None si no hay club cargado."""
     cursor = conexion.cursor()
     cursor.execute("SELECT nombre, descripcion, ubicacion, presidente, fecha_fundacion FROM clubes LIMIT 1")
     fila = cursor.fetchone()
@@ -310,3 +288,78 @@ def obtener_club(conexion):
         return None
     nombre, descripcion, ubicacion, presidente, fecha_fundacion = fila
     return Club(nombre, descripcion, ubicacion, presidente, date.fromisoformat(fecha_fundacion))
+
+    # ==========================================
+#  SQLITE 1.3 - MODIFICACIONES Y BAJAS
+# ==========================================
+
+def actualizar_estado_cuota(conexion, usuario, periodo, nuevo_estado):
+    """Actualiza el estado de la cuota de un socio para un período específico."""
+    cursor = conexion.cursor()
+    cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
+    fila = cursor.fetchone()
+    if fila is None:
+        return "El socio no existe."
+    socio_id = fila[0]
+
+    cursor.execute("""
+        UPDATE cuotas
+        SET estado = ?
+        WHERE socio_id = ? AND periodo = ?
+    """, (nuevo_estado, socio_id, periodo))
+    
+    if cursor.rowcount == 0:
+        return f"No se encontró la cuota del período '{periodo}'."
+    
+    conexion.commit()
+    return f"Cuota del período '{periodo}' actualizada a '{nuevo_estado}'."
+
+
+def cambiar_estado_socio(conexion, usuario, nuevo_estado):
+    """Cambia el estado del socio ('Activo' / 'Suspendido')."""
+    cursor = conexion.cursor()
+    cursor.execute("""
+        UPDATE socios
+        SET estado = ?
+        WHERE usuario = ?
+    """, (nuevo_estado, usuario))
+    
+    if cursor.rowcount == 0:
+        return "El socio no existe."
+        
+    conexion.commit()
+    return f"Estado del socio '{usuario}' cambiado a '{nuevo_estado}'."
+
+
+def actualizar_contrasenia_socio(conexion, usuario, nueva_contrasenia):
+    """Actualiza la contraseña de acceso de un socio."""
+    cursor = conexion.cursor()
+    cursor.execute("""
+        UPDATE socios
+        SET contrasenia = ?
+        WHERE usuario = ?
+    """, (nueva_contrasenia, usuario))
+    
+    if cursor.rowcount == 0:
+        return "El socio no existe."
+        
+    conexion.commit()
+    return f"Contraseña actualizada para '{usuario}'."
+
+
+def eliminar_socio(conexion, usuario):
+    #Elimina un socio y todos sus datos asociados (cuotas, actividades).
+    cursor = conexion.cursor()
+    cursor.execute("SELECT id FROM socios WHERE usuario = ?", (usuario,))
+    fila = cursor.fetchone()
+    if fila is None:
+        return "El socio no existe."
+    socio_id = fila[0]
+
+    # Mantiene la integridad referencial borrando datos relacionados
+    cursor.execute("DELETE FROM socio_actividad WHERE socio_id = ?", (socio_id,))
+    cursor.execute("DELETE FROM cuotas WHERE socio_id = ?", (socio_id,))
+    cursor.execute("DELETE FROM socios WHERE id = ?", (socio_id,))
+    
+    conexion.commit()
+    return f"Socio '{usuario}' y sus datos asociados fueron eliminados de la BD."
