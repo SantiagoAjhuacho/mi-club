@@ -1,4 +1,3 @@
-"""Prueba de la capa de base de datos e integración de SQLite 1.3."""
 from datetime import date
 from pathlib import Path
 
@@ -71,6 +70,7 @@ for act in listar_actividades_de_socio(conexion, "carlosramirez"):
 
 # 6. --- PRUEBAS SQLITE 1.3 (Modificaciones y Bajas) ---
 print("\n--- Pruebas SQLite 1.3 ---")
+#la /n sirve para separar la salida en la consola y hacerla más legible
 
 # Actualizar estado de cuota
 print(actualizar_estado_cuota(conexion, "carlosramirez", "Noviembre 2026", "Pagada"))
